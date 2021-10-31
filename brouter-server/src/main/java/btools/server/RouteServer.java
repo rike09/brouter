@@ -114,7 +114,7 @@ public class RouteServer extends Thread implements Comparable<RouteServer>
               }
               if ( line.startsWith( "x-forwarded-for: " ) )
               {
-//                xff = line.substring( "x-forwarded-for: ".length() );
+                xff = line.substring( "x-forwarded-for: ".length() );
               }
               if ( line.startsWith( "Referer: " ) )
               {
