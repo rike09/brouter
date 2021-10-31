@@ -121,7 +121,7 @@ public class RouteServer extends Thread implements Comparable<RouteServer>
               }
               if ( line.startsWith( "x-forwarded-for: " ) )
               {
-                xff = line.substring( "x-forwarded-for: ".length() );
+//                xff = line.substring( "x-forwarded-for: ".length() );
               }
               if ( line.startsWith( "Referer: " ) )
               {
@@ -132,7 +132,7 @@ public class RouteServer extends Thread implements Comparable<RouteServer>
                 referer = line.substring( "Referrer: ".length() );
               }
             }
-            
+
             InetAddress ip = clientSocket.getInetAddress();
             sIp = xff == null ? (ip==null ? "null" : ip.toString() ) : xff;
             boolean newSession = IpAccessMonitor.touchIpAccess( sIp );
@@ -288,7 +288,7 @@ public class RouteServer extends Thread implements Comparable<RouteServer>
             else
             {
               OsmTrack track = cr.getFoundTrack();
-              
+
 	      System.out.println("Found track" + cr.getFoundTrack());
 
               String headers = encodings == null || encodings.indexOf( "gzip" ) < 0 ? null : "Content-Encoding: gzip\n";
@@ -331,8 +331,8 @@ public class RouteServer extends Thread implements Comparable<RouteServer>
 	      } catch (Exception ignore) {
 	      }
               cr = null;
-//              if ( bw != null ) try { bw.close(); } catch( Exception e ) {}
-//            if ( br != null ) try { br.close(); } catch( Exception e ) {}
+            if ( br != null ) try { br.close(); } catch( Exception e ) {}
+              if ( bw != null ) try { bw.close(); } catch( Exception e ) {}
             if ( clientSocket != null ) try { clientSocket.close(); } catch( Exception e ) {}
               terminated = true;
               synchronized( threadPoolSync )
@@ -344,7 +344,7 @@ public class RouteServer extends Thread implements Comparable<RouteServer>
               System.out.println( formattedTimeStamp(t) + sessionInfo + " ip=" + sIp + " ms=" + ms + " -> " + getline );
           }
   }
-  
+
 
   public static void main(String[] args) throws Exception
   {
@@ -366,7 +366,7 @@ public class RouteServer extends Thread implements Comparable<RouteServer>
         serviceContext.sharedProfileDir = tk.hasMoreTokens() ? tk.nextToken() : serviceContext.customProfileDir;
 
         int maxthreads = Integer.parseInt( args[4] );
-        
+
         ProfileCache.setSize( 2*maxthreads );
 
         PriorityQueue<RouteServer> threadQueue = new PriorityQueue<RouteServer>();
@@ -526,11 +526,11 @@ public class RouteServer extends Thread implements Comparable<RouteServer>
       }
     }
   }
-  
+
   @Override
   public int compareTo( RouteServer t )
   {
     return starttime < t.starttime ? -1 : ( starttime > t.starttime ? 1 : 0 );
   }
-  
+
 }
