@@ -51,7 +51,5 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
-task stage() {
-    dependsOn clean, allprojects
-}
-
+task stage(dependsOn: ['build', 'clean'])
+build.mustRunAfter clean
