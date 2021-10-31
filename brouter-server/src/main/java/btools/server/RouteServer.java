@@ -280,6 +280,7 @@ public class RouteServer extends Thread implements Comparable<RouteServer>
 
             if ( cr.getErrorMessage() != null )
             {
+		System.out.println("Bad request on routing " + cr.getErrorMessage());
               writeHttpHeader(bw, HTTP_STATUS_BAD_REQUEST);
               bw.write( cr.getErrorMessage() );
               bw.write( "\n" );
@@ -288,6 +289,8 @@ public class RouteServer extends Thread implements Comparable<RouteServer>
             {
               OsmTrack track = cr.getFoundTrack();
               
+	      System.out.println("Found track");
+
               String headers = encodings == null || encodings.indexOf( "gzip" ) < 0 ? null : "Content-Encoding: gzip\n";
               writeHttpHeader(bw, handler.getMimeType(), handler.getFileName(), headers, HTTP_STATUS_OK );
               if ( track != null )
