@@ -1,18 +1,11 @@
 package btools.server;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.io.Writer;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -307,7 +300,8 @@ public class RouteServer extends Thread implements Comparable<RouteServer>
                 else
                 {
 //                  bw.write( handler.formatTrack(track) );
-                  bw.write("Hello World\r\n\r\n");
+                  clientSocket.getOutputStream().write( "Hello World!".getBytes(StandardCharsets.UTF_8));
+                  bw.flush();
                 }
               }
             }
