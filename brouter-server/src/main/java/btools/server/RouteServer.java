@@ -331,9 +331,9 @@ public class RouteServer extends Thread implements Comparable<RouteServer>
 	      } catch (Exception ignore) {
 	      }
               cr = null;
-              if ( br != null ) try { br.close(); } catch( Exception e ) {}
-              if ( bw != null ) try { bw.close(); } catch( Exception e ) {}
-              if ( clientSocket != null ) try { clientSocket.close(); } catch( Exception e ) {}
+//              if ( bw != null ) try { bw.close(); } catch( Exception e ) {}
+//            if ( br != null ) try { br.close(); } catch( Exception e ) {}
+            if ( clientSocket != null ) try { clientSocket.close(); } catch( Exception e ) {}
               terminated = true;
               synchronized( threadPoolSync )
               {
