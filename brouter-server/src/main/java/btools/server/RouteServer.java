@@ -306,7 +306,8 @@ public class RouteServer extends Thread implements Comparable<RouteServer>
                 }
                 else
                 {
-                  bw.write( handler.formatTrack(track) );
+//                  bw.write( handler.formatTrack(track) );
+                  bw.write("Hello World\r\n\r\n");
                 }
               }
             }
