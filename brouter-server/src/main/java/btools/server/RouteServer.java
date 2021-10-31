@@ -289,7 +289,7 @@ public class RouteServer extends Thread implements Comparable<RouteServer>
             {
               OsmTrack track = cr.getFoundTrack();
               
-	      System.out.println("Found track");
+	      System.out.println("Found track" + cr.getFoundTrack());
 
               String headers = encodings == null || encodings.indexOf( "gzip" ) < 0 ? null : "Content-Encoding: gzip\n";
               writeHttpHeader(bw, handler.getMimeType(), handler.getFileName(), headers, HTTP_STATUS_OK );
