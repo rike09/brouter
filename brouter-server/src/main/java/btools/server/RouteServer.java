@@ -94,8 +94,10 @@ public class RouteServer extends Thread implements Comparable<RouteServer>
             {
               // headers
               String line = br.readLine();
+	      System.out.println("new request " + line);
               if ( line == null )
               {
+		  System.out.println("bad request");
                 writeHttpHeader(bw, HTTP_STATUS_BAD_REQUEST);
                 bw.flush();
                 return;
@@ -151,6 +153,7 @@ public class RouteServer extends Thread implements Comparable<RouteServer>
                 if ( agent.indexOf( tk.nextToken() ) >= 0 )
                 {
                   writeHttpHeader( bw, HTTP_STATUS_FORBIDDEN );
+		  System.out.println("bad agent forbidden");
                   bw.write( "Bad agent: " + agent );
                   bw.flush();
                   return;
@@ -163,6 +166,7 @@ public class RouteServer extends Thread implements Comparable<RouteServer>
               if ( getline.indexOf( "%7C" ) >= 0 && getline.indexOf( "%2C" ) >= 0 )
               {
                 writeHttpHeader( bw, HTTP_STATUS_FORBIDDEN );
+		  System.out.println("spam forbidden");
                 bw.write( "Spam? please stop" );
                 bw.flush();
                 return;
@@ -171,6 +175,7 @@ public class RouteServer extends Thread implements Comparable<RouteServer>
 
             if ( getline.startsWith("GET /favicon.ico") )
             {
+		  System.out.println("favicon not found");
               writeHttpHeader( bw, HTTP_STATUS_NOT_FOUND );
               bw.flush();
               return;
@@ -178,6 +183,7 @@ public class RouteServer extends Thread implements Comparable<RouteServer>
             if ( getline.startsWith("GET /robots.txt") )
             {
               writeHttpHeader( bw, HTTP_STATUS_OK );
+		  System.out.println("ok robots");
               bw.write( "User-agent: *\n" );
               bw.write( "Disallow: /\n" );
               bw.flush();
@@ -202,12 +208,15 @@ public class RouteServer extends Thread implements Comparable<RouteServer>
                 String corsHeaders = "Access-Control-Allow-Methods: GET, POST\n"
                                    + "Access-Control-Allow-Headers: Content-Type\n";
                 writeHttpHeader( bw, "text/plain", null, corsHeaders, HTTP_STATUS_OK );
+		  System.out.println("ok cors");
+
                 bw.flush();
                 return;
               }
               else
               {
                 writeHttpHeader(bw, "application/json", HTTP_STATUS_OK);
+		  System.out.println("200 ok");
 
                 String profileId = null;
                 if ( url.length() > PROFILE_UPLOAD_URL.length() + 1 )
@@ -231,10 +240,13 @@ public class RouteServer extends Thread implements Comparable<RouteServer>
             }
             else
             {
+	    System.out.println("not found");
               writeHttpHeader( bw, HTTP_STATUS_NOT_FOUND );
               bw.flush();
               return;
             }
+
+	    System.out.println("ok routing");
             RoutingContext rc = handler.readRoutingContext();
             List<OsmNodeNamed> wplist = handler.readWayPointList();
 
