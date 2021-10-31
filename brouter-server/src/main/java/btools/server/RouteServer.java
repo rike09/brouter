@@ -201,7 +201,7 @@ public class RouteServer extends Thread implements Comparable<RouteServer>
             	handler = new ServerHandler( serviceContext, params );
             }
             else if ( url.startsWith( PROFILE_UPLOAD_URL ) )
-            {
+            
               if ( getline.startsWith("OPTIONS") )
               {
                 // handle CORS preflight request (Safari)
@@ -312,6 +312,8 @@ public class RouteServer extends Thread implements Comparable<RouteServer>
           catch (Throwable e)
           {
              try {
+		 System.out.println("Ocorreu um erro " + e);
+		 e.printStackTrace();
                writeHttpHeader(bw, HTTP_STATUS_INTERNAL_SERVER_ERROR);
                bw.flush();
              }
