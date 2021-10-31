@@ -47,10 +47,11 @@ allprojects {
     }
 }
 
-task stage() {
-    dependsOn clean, build
-}
-
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+task stage() {
+    dependsOn clean, allprojects
+}
+
