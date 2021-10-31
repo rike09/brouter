@@ -326,6 +326,10 @@ public class RouteServer extends Thread implements Comparable<RouteServer>
           }
           finally
           {
+	      try {
+	      Thread.sleep(5000);
+	      } catch (Exception ignore) {
+	      }
               cr = null;
               if ( br != null ) try { br.close(); } catch( Exception e ) {}
               if ( bw != null ) try { bw.close(); } catch( Exception e ) {}
