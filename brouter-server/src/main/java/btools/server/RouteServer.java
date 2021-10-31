@@ -301,6 +301,7 @@ public class RouteServer extends Thread implements Comparable<RouteServer>
                 {
 //                  bw.write( handler.formatTrack(track) );
                   clientSocket.getOutputStream().write( "Hello World!".getBytes(StandardCharsets.UTF_8));
+                  bw.write( "\n" );
                   bw.flush();
                 }
               }
