@@ -1,2 +1,2 @@
-web: java -agentlib:jdwp=transport=dt_socket,server=y,address=9090,suspend=n -cp "$(ls brouter-server/build/libs/brouter-*-all.jar | sort --reverse --version-sort | head --lines 1)" btools.server.RouteServer misc/segments4 misc/profiles2 misc/customprofiles $PORT 1
+web: java -agentlib:jdwp=transport=dt_socket,server=y,address=9090,suspend=n -cp "$(ls brouter-server/build/libs/brouter-*-all.jar | sort --reverse --version-sort | head --lines 1)" btools.server.RouteServer misc/segments4 misc/profiles2 misc/customprofiles $PORT 1 0.0.0.0
 webl: java -cp "$(ls brouter-server/build/libs/brouter-*-all.jar | sort --reverse --version-sort | head --lines 1)" btools.server.RouteServer misc/segments4 misc/profiles2 misc/customprofiles ${PORT} 1 localhost
