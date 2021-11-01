@@ -1,31 +1,20 @@
 package btools.server;
 
+import btools.router.*;
+import btools.server.request.ProfileUploadHandler;
+import btools.server.request.RequestHandler;
+import btools.server.request.ServerHandler;
+import btools.util.StackSampler;
+
 import java.io.*;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.StringTokenizer;
+import java.util.*;
 import java.util.zip.GZIPOutputStream;
-
-import btools.router.OsmNodeNamed;
-import btools.router.OsmTrack;
-import btools.router.ProfileCache;
-import btools.router.RoutingContext;
-import btools.router.RoutingEngine;
-import btools.server.request.ProfileUploadHandler;
-import btools.server.request.RequestHandler;
-import btools.server.request.ServerHandler;
-import btools.util.StackSampler;
 
 public class RouteServer extends Thread implements Comparable<RouteServer>
 {
@@ -87,10 +76,8 @@ public class RouteServer extends Thread implements Comparable<RouteServer>
             {
               // headers
               String line = br.readLine();
-	      System.out.println("new request " + line);
               if ( line == null )
               {
-		  System.out.println("bad request");
                 writeHttpHeader(bw, HTTP_STATUS_BAD_REQUEST);
                 bw.flush();
                 return;
@@ -146,7 +133,6 @@ public class RouteServer extends Thread implements Comparable<RouteServer>
                 if ( agent.indexOf( tk.nextToken() ) >= 0 )
                 {
                   writeHttpHeader( bw, HTTP_STATUS_FORBIDDEN );
-		  System.out.println("bad agent forbidden");
                   bw.write( "Bad agent: " + agent );
                   bw.flush();
                   return;
@@ -159,7 +145,6 @@ public class RouteServer extends Thread implements Comparable<RouteServer>
               if ( getline.indexOf( "%7C" ) >= 0 && getline.indexOf( "%2C" ) >= 0 )
               {
                 writeHttpHeader( bw, HTTP_STATUS_FORBIDDEN );
-		  System.out.println("spam forbidden");
                 bw.write( "Spam? please stop" );
                 bw.flush();
                 return;
@@ -168,7 +153,6 @@ public class RouteServer extends Thread implements Comparable<RouteServer>
 
             if ( getline.startsWith("GET /favicon.ico") )
             {
-		  System.out.println("favicon not found");
               writeHttpHeader( bw, HTTP_STATUS_NOT_FOUND );
               bw.flush();
               return;
@@ -176,7 +160,6 @@ public class RouteServer extends Thread implements Comparable<RouteServer>
             if ( getline.startsWith("GET /robots.txt") )
             {
               writeHttpHeader( bw, HTTP_STATUS_OK );
-		  System.out.println("ok robots");
               bw.write( "User-agent: *\n" );
               bw.write( "Disallow: /\n" );
               bw.flush();
@@ -201,15 +184,12 @@ public class RouteServer extends Thread implements Comparable<RouteServer>
                 String corsHeaders = "Access-Control-Allow-Methods: GET, POST\n"
                                    + "Access-Control-Allow-Headers: Content-Type\n";
                 writeHttpHeader( bw, "text/plain", null, corsHeaders, HTTP_STATUS_OK );
-		  System.out.println("ok cors");
-
                 bw.flush();
                 return;
               }
               else
               {
                 writeHttpHeader(bw, "application/json", HTTP_STATUS_OK);
-		  System.out.println("200 ok");
 
                 String profileId = null;
                 if ( url.length() > PROFILE_UPLOAD_URL.length() + 1 )
@@ -233,13 +213,10 @@ public class RouteServer extends Thread implements Comparable<RouteServer>
             }
             else
             {
-	    System.out.println("not found");
               writeHttpHeader( bw, HTTP_STATUS_NOT_FOUND );
               bw.flush();
               return;
             }
-
-	    System.out.println("ok routing");
             RoutingContext rc = handler.readRoutingContext();
             List<OsmNodeNamed> wplist = handler.readWayPointList();
 
@@ -273,7 +250,6 @@ public class RouteServer extends Thread implements Comparable<RouteServer>
 
             if ( cr.getErrorMessage() != null )
             {
-		System.out.println("Bad request on routing " + cr.getErrorMessage());
               writeHttpHeader(bw, HTTP_STATUS_BAD_REQUEST);
               bw.write( cr.getErrorMessage() );
               bw.write( "\n" );
@@ -281,8 +257,6 @@ public class RouteServer extends Thread implements Comparable<RouteServer>
             else
             {
               OsmTrack track = cr.getFoundTrack();
-
-	      System.out.println("Found track" + cr.getFoundTrack());
 
               String headers = encodings == null || encodings.indexOf( "gzip" ) < 0 ? null : "Content-Encoding: gzip\n";
               writeHttpHeader(bw, handler.getMimeType(), handler.getFileName(), headers, HTTP_STATUS_OK );
@@ -300,17 +274,15 @@ public class RouteServer extends Thread implements Comparable<RouteServer>
                 else
                 {
                   bw.write( handler.formatTrack(track) );
-                  bw.write( "\r\n\r\n" );
                 }
               }
             }
+            bw.write( "\r\n\r\n" );
             bw.flush();
           }
           catch (Throwable e)
           {
              try {
-		 System.out.println("Ocorreu um erro " + e);
-		 e.printStackTrace();
                writeHttpHeader(bw, HTTP_STATUS_INTERNAL_SERVER_ERROR);
                bw.flush();
              }
@@ -320,14 +292,10 @@ public class RouteServer extends Thread implements Comparable<RouteServer>
           }
           finally
           {
-	      try {
-	      Thread.sleep(5000);
-	      } catch (Exception ignore) {
-	      }
               cr = null;
-            if ( br != null ) try { br.close(); } catch( Exception e ) { System.out.println("Error closing br " + e);}
-              if ( bw != null ) try { bw.close(); } catch( Exception e ) { System.out.println("Error closing bw " + e);}
-            if ( clientSocket != null ) try { clientSocket.close(); } catch( Exception e ) { System.out.println("Error closing clientSocket " + e);}
+              if ( br != null ) try { br.close(); } catch( Exception e ) {}
+              if ( bw != null ) try { bw.close(); } catch( Exception e ) {}
+              if ( clientSocket != null ) try { clientSocket.close(); } catch( Exception e ) {}
               terminated = true;
               synchronized( threadPoolSync )
               {
