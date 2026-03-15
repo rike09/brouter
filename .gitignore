@@ -14,8 +14,7 @@
 /captures
 .externalNativeBuild
 .cxx
-misc/customprofiles
-misc/segments4
+misc/segments4/*.rd5
 *.BAK
 .classpath
 .project
