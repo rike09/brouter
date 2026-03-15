@@ -15,6 +15,7 @@
 .externalNativeBuild
 .cxx
 misc/customprofiles
+misc/segments4
 *.BAK
 .classpath
 .project
